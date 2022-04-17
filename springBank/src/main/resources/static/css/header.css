@@ -1,0 +1,29 @@
+header{
+    padding-bottom:0px;
+    outline: #a10e8e inset 2px;
+    background: #bcd58a;
+}
+.header-title{
+    font-family: 'Brush Script MT', cursive;
+    font-size: xxx-large;
+    text-align: center;
+    padding: 20px;
+    margin: 5px;
+    color: #3a2e0e;
+}
+.header-background {
+    background-image: url("../images/header.png");
+    background-size: 100% 100%;
+    outline: #a10e8e inset 2px;
+    background-repeat: no-repeat;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+nav{
+    margin: 0px;
+    padding: 0px;
+}
+a{
+    color: #3a2e0e;
+}
+

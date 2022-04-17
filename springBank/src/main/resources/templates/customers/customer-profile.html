@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${customer.getName()} + ' ' + ${customer.getSurname()}">Customer Profile</title>
+</head>
+
+<header th:replace="fragments/common_fragments::common-header">Header</header>
+<body>
+<div>
+    <p>
+        <span th:text="#{customer.profile.nId} + ' : '">National ID</span>
+        <span th:text="${customer.getNational_ID()}">Unknown</span>
+    </p>
+    <p>
+        <span th:text="#{customer.profile.name} + ' : '">First Name</span>
+        <span th:text="${customer.getName()}">Unknown Name</span>
+    </p>
+    <p>
+        <span th:text="#{customer.profile.surname} + ' : '">Surname Name</span>
+        <span th:text="${customer.getSurname()}">Unknown Surame</span>
+    </p>
+    <p>
+        <span th:text="#{customer.profile.ID} + ' : '">Customer ID</span>
+        <span th:text="${customer.getID()}">Unknown Customer</span>
+    </p>
+    <p>
+        <span th:text="#{customer.profile.phone} + ' : '">Phone Number</span>
+        <span th:text="${customer.getPhone()}">Unknown Phone Number</span>
+    </p>
+    <p>
+        <span th:text="#{customer.profile.email} + ' : '">Email</span>
+        <span th:text="${customer.getEmail()}">unknown@mail.com</span>
+    </p>
+    <p>
+        <span th:text="#{customer.profile.address}">Address</span>
+        <br>
+
+
+    </p>
+
+</div>
+
+</body>
+<footer th:replace="fragments/common_fragments::common-footer">Footer</footer>
+</html>
