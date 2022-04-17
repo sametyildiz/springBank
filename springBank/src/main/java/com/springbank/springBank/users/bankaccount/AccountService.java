@@ -2,8 +2,12 @@ package com.springbank.springBank.users.bankaccount;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
@@ -19,8 +23,8 @@ public class AccountService {
     }
 
     @Transactional(timeout = 100)
-    public Account getAccount(Long id) {
-        return accountDAO.findById(id).orElse(null);
+    public Optional<Account> getAccount(Long id) {
+        return accountDAO.findById(id);
     }
 
     @Transactional(timeout = 100)
@@ -30,4 +34,12 @@ public class AccountService {
         accountDAO.delete(account);
         return true;
     }
+
+    @Transactional(timeout = 100,readOnly = true)
+    public Page<AccountResponsePagginate> getAccountList(Long ID, int page, int pageSize){
+
+        return accountDAO.findAllByCustomer_ID(ID, PageRequest.of(page, pageSize)).map(
+                m -> new AccountResponsePagginate(m.getID(),m.getBalance(),m.getBranchCode(),m.getCurrency()));
+    }
 }
+

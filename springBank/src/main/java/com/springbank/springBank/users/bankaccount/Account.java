@@ -1,9 +1,11 @@
 package com.springbank.springBank.users.bankaccount;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springbank.springBank.users.customer.Customer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,17 +30,21 @@ public class Account {
     @Column(name = "id",updatable = false, nullable = false)
     private Long ID;
 
-    @Column(nullable = false)
-    @ColumnDefault("0.00")
-    private Double balance;
+    @Column(columnDefinition = "numeric default 0.0") // is working for primitive type
+    private double balance;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = " Varchar(5) default 'TRY'")
-    private Currency currency;
+    @Column(length = 20)
+    private Currency currency = Currency.TRY;
 
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id" , referencedColumnName = "ID")
     private Customer customer;
+
+    @Column(nullable = false)
+    private int branchCode;
 
 }
 
