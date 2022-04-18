@@ -75,6 +75,7 @@ class CustomerServiceTest {
         customer.setName("Test");
         customer.setSurname("Test");
         customer.setPhone("123456789");
+        customer.setEmail("test@mail.com");
         customer.setNational_ID("1111111111111111");
         return customer;
     }

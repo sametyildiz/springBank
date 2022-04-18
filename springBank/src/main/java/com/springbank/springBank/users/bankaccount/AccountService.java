@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -29,6 +30,7 @@ public class AccountService {
         return accountDAO.findById(id);
     }
 
+
     @Transactional(timeout = 100)
     public boolean deleteAccount(Account account) {
         if(account == null)
@@ -44,33 +46,37 @@ public class AccountService {
                 m -> new AccountResponsePagginate(m.getID(),m.getBalance(),m.getBranchCode(),m.getCurrency()));
     }
 
-    @Transactional(timeout = 100,readOnly = true)
+    @Transactional(timeout = 100)
     public boolean remittance(RemittanceRequest remittanceRequest){
         if(!checkRemittanceRequest(remittanceRequest)){
             return false;
         }
+        accountDAO.updateBalanceByPayment(remittanceRequest.senderID(),-remittanceRequest.amount());
+        accountDAO.updateBalanceByPayment(remittanceRequest.receiverID(), remittanceRequest.amount());
 
         return true;
     }
+
     @Transactional(timeout = 100,readOnly = true, propagation = Propagation.MANDATORY)
      boolean checkRemittanceRequest(RemittanceRequest remittanceRequest){
         Account sender = accountDAO.findById(remittanceRequest.senderID())
                 .orElseThrow(()->new InvalidInput("Sender account does not exist"));
         Account receiver = accountDAO.findById(remittanceRequest.receiverID())
                 .orElseThrow(()->new InvalidInput("Receiver account does not exist"));
-
-        if(remittanceRequest.senderID() == remittanceRequest.receiverID()){
+        if(remittanceRequest.amount() <=0)
+            throw new InvalidInput("Amount must be greater than 0");
+        if(remittanceRequest.senderID().equals(remittanceRequest.receiverID())){
             throw new InvalidInput("Sender and receiver can't be the same");
         }
         if(sender.getBalance() < remittanceRequest.amount()){
             throw new InvalidInput("Sender account does not have enough balance");
         }
-        if(sender.getCurrency() == receiver.getCurrency()){
+        if(!sender.getCurrency().equals(receiver.getCurrency())){
             throw new InvalidInput("Sender and receiver account must have the same currency");
         }
         if(receiver.getID() == remittanceRequest.receiverID()
-            && receiver.getCustomer().getName().equals(remittanceRequest.receiverName())
-            && receiver.getCustomer().getSurname().equals(remittanceRequest.receiverSurname()))
+            && receiver.getCustomer().getName().equalsIgnoreCase(remittanceRequest.receiverName())
+            && receiver.getCustomer().getSurname().equalsIgnoreCase(remittanceRequest.receiverSurname()))
             return true;
 
         return false;
