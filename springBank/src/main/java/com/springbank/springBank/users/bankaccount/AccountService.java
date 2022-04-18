@@ -1,10 +1,12 @@
 package com.springbank.springBank.users.bankaccount;
 
+import com.springbank.springBank.utils.InvalidInput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -41,5 +43,38 @@ public class AccountService {
         return accountDAO.findAllByCustomer_ID(ID, PageRequest.of(page, pageSize)).map(
                 m -> new AccountResponsePagginate(m.getID(),m.getBalance(),m.getBranchCode(),m.getCurrency()));
     }
+
+    @Transactional(timeout = 100,readOnly = true)
+    public boolean remittance(RemittanceRequest remittanceRequest){
+        if(!checkRemittanceRequest(remittanceRequest)){
+            return false;
+        }
+
+        return true;
+    }
+    @Transactional(timeout = 100,readOnly = true, propagation = Propagation.MANDATORY)
+     boolean checkRemittanceRequest(RemittanceRequest remittanceRequest){
+        Account sender = accountDAO.findById(remittanceRequest.senderID())
+                .orElseThrow(()->new InvalidInput("Sender account does not exist"));
+        Account receiver = accountDAO.findById(remittanceRequest.receiverID())
+                .orElseThrow(()->new InvalidInput("Receiver account does not exist"));
+
+        if(remittanceRequest.senderID() == remittanceRequest.receiverID()){
+            throw new InvalidInput("Sender and receiver can't be the same");
+        }
+        if(sender.getBalance() < remittanceRequest.amount()){
+            throw new InvalidInput("Sender account does not have enough balance");
+        }
+        if(sender.getCurrency() == receiver.getCurrency()){
+            throw new InvalidInput("Sender and receiver account must have the same currency");
+        }
+        if(receiver.getID() == remittanceRequest.receiverID()
+            && receiver.getCustomer().getName().equals(remittanceRequest.receiverName())
+            && receiver.getCustomer().getSurname().equals(remittanceRequest.receiverSurname()))
+            return true;
+
+        return false;
+    }
+
 }
 
