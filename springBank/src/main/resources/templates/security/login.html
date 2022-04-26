@@ -2,25 +2,54 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+
+    <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+
+    <script th:src="@{/jq/jquery-3.6.0.min.js}"></script>
+
+
     <title th:text="#{login.title}">Login</title>
 </head>
+<header th:replace="fragments/common_fragments::common-header">Header</header>
 <body>
+    <div id="header"></div>
+    <div class="container">
+        <div class="spaceFromTop"></div>
+        <div class="row">
+            <div class="d-flex justify-content-center">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="#{login.title}">Log in</h5>
+                        <form name="login.form" th:action="@{/auth/login}" method="post">
+                            <div class="form-group">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nId" name="nid" placeholder="nID">
+                                    <label  th:text="#{login.nationalID}" for="nId">National ID</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="password">
+                                    <label th:text="#{login.password}" for="password">Password</label>
+                                </div>
+                                <br>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-secondary btn-lg " th:text="#{login.submit}">Submit</button>
+                                </div>
 
-    <form name="login.form" th:action="@{/auth/login}" method="post">
-        <div>
-            <label th:text="#{login.nationalID}">National ID</label>
-            <input type="text" name="nid"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+                </div>
         </div>
-        <div>
-            <label th:text="#{login.password}">Password</label>
-            <input type="password" name="password"/>
-        </div>
-
-        <div>
-            <button type="submit" th:text="#{login.submit}">Submit</button>
-        </div>
-
-    </form>
+    </div>
 
 </body>
+
+<footer th:replace="fragments/common_fragments::common-footer">Footer</footer>
 </html>

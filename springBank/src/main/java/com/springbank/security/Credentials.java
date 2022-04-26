@@ -1,11 +1,12 @@
 package com.springbank.security;
 
-import com.springbank.users.customer.Customer;
+import com.springbank.users.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,18 +15,20 @@ import javax.persistence.*;
 public class Credentials {
 
     @Id
-    @Column
-    private String nid;
+    private String nId;
 
     @Column
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="customer_id", referencedColumnName = "ID")
-    private Customer customer;
+    @JoinColumn(name="user_id", referencedColumnName = "ID")
+    private User user;
 
+    @ElementCollection(targetClass = Role.class ,fetch = FetchType.EAGER)
+    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "nId"))
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Set<Role> role;
 
     @Column(nullable = false)
     @ColumnDefault("true")

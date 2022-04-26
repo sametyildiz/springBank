@@ -12,11 +12,11 @@ import java.util.Optional;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/transaction")
+@RequestMapping("/account-options")
 public class AccountController {
     private final AccountService accountService;
 
-    @RequestMapping(value = "/account/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/info/{id}")
     public String getAccount(Model model, @PathVariable("id") Long id) {
         Optional<Account> account = accountService.getAccount(id);
         if (account.isEmpty())
@@ -36,7 +36,7 @@ public class AccountController {
         return "customers/customer-account";
     }
 
-    @GetMapping("{id}/accountList")
+    @GetMapping("/accountList")
     public String getCustomerAccount(Model model ,@PathVariable("id") Long id,
                                      @RequestParam(defaultValue = "0") Integer page,
                                      @RequestParam(defaultValue = "3") Integer size) {
@@ -48,23 +48,23 @@ public class AccountController {
         return "customers/customer-account-list";
     }
 
-//    @GetMapping("/{id}/remittance")
-//    public String remittanceRequest(Model model,@PathVariable("id") Long id,
-//                                    @RequestParam(defaultValue = "0") Integer page,
-//                                    @RequestParam(defaultValue = "3") Integer size) {
-//        Page<AccountResponsePagginate> response = accountService.getCustomerAccounts(id,page,size);
-//
-//        model.addAttribute("accountList", response);
-//        model.addAttribute("remittance", new RemittanceRequest());
-//
-//        return "customers/customer-account-remittance";
-//
-//    }
-//    @PostMapping("/{id}/remittance")
-//    public String handleRemitanceRequest(@ModelAttribute("remittance") RemittanceRequest remittanceRequest){
-//        accountService.remittance(remittanceRequest);
-//        return "redirect:/transaction/{id}/accountList";
-//    }
+    @GetMapping("/remittance")
+    public String remittanceRequest(Model model,@PathVariable("id") Long id,
+                                    @RequestParam(defaultValue = "0") Integer page,
+                                    @RequestParam(defaultValue = "3") Integer size) {
+        Page<AccountResponsePagginate> response = accountService.getCustomerAccounts(id,page,size);
+
+        model.addAttribute("accountList", response);
+        model.addAttribute("remittance", new RemittanceRequest());
+
+        return "customers/customer-account-remittance";
+
+    }
+    @PostMapping("/remittance")
+    public String handleRemitanceRequest(@ModelAttribute("remittance") RemittanceRequest remittanceRequest){
+        accountService.remittance(remittanceRequest);
+        return "redirect:/transaction/{id}/accountList";
+    }
 }
 record AccountResponse(Long ID,double balance,int branchCode, Currency currency ,
                        long customerId, String customerName,String customerSurname){

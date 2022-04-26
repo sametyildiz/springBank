@@ -1,6 +1,7 @@
 package com.springbank.users.customer.address;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.springbank.users.User;
 import com.springbank.users.customer.Customer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,5 +37,5 @@ public class Address {
 
     @JsonIgnore
     @OneToOne(mappedBy = "address" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Customer customer;
+    private User user;
 }

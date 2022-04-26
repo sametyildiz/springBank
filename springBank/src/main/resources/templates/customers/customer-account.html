@@ -4,33 +4,50 @@
     <meta charset="UTF-8">
     <title>Customer Accounts</title>
     <link rel="stylesheet" th:href="@{/css/account-table.css}">
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
+
+    <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+
+    <script th:src="@{/jq/jquery-3.6.0.min.js}"></script>
 </head>
 <header th:replace="fragments/common_fragments::common-header">Header</header>
 <body>
-        <div>
-            <table>
-                    <h3 th:text="#{account.info.title}">Account Information</h3>
-                <tr>
-                    <th th:text="#{account.info.customerID}">Customer ID :</th>
-                    <td th:text="${account.customerId()}">ID</td>
-                </tr>
-                <tr>
-                    <th th:text="#{account.info.customerFullName}">Customer Full Name :</th>
-                    <td th:text="${account.customerName()} + ' ' + ${account.customerSurname()}">ID</td>
-                </tr>
-                <tr>
-                    <th th:text="#{account.info.ID}">Account ID :</th>
-                    <td th:text="${account.ID()}">Account ID</td>
-                </tr>
-                <tr>
-                    <th th:text="#{account.info.branchCode}">Branch Code :</th>
-                    <td th:text="${account.branchCode()}"> Branch Code</td>
-                </tr>
-                <tr>
-                    <th th:text="#{account.info.balance}">Balance :</th>
-                    <td th:text="${account.balance()}  + ' ' + ${account.currency()} ">Balance-Currency</td>
-                </tr>
-            </table>
+        <div class="container">
+            <div class="row">
+                <div class="d-flex justify-content-center">
+                    <div class="card" style="margin-top: 10%;">
+                        <div class="card-header border border-dark">
+                            <h3 th:text="#{account.info.title}">Account Information</h3>
+                        </div>
+                        <table class="table-success border border-dark">
+                            <tbody>
+                            <tr>
+                                <th th:text="#{account.info.customerID}">Customer ID :</th>
+                                <td th:text="${account.customerId()}">ID</td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.info.customerFullName}">Customer Full Name :</th>
+                                <td th:text="${account.customerName()} + ' ' + ${account.customerSurname()}">ID</td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.info.ID}">Account ID :</th>
+                                <td th:text="${account.ID()}">Account ID</td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.info.branchCode}">Branch Code :</th>
+                                <td th:text="${account.branchCode()}"> Branch Code</td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.info.balance}">Balance :</th>
+                                <td th:text="${account.balance()}  + ' ' + ${account.currency()} ">Balance-Currency</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
 </body>
