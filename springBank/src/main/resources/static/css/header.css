@@ -1,7 +1,8 @@
 header{
     padding-bottom:0px;
     outline: #a10e8e inset 2px;
-    background: #bcd58a;
+    background: rgb(240,187,98);
+    background: radial-gradient(circle, rgba(240,187,98,1) 5%, rgba(158,166,93,1) 38%, rgba(244,238,169,1) 70%, rgba(6,70,53,1) 99%);
 }
 .header-title{
     font-family: 'Brush Script MT', cursive;
@@ -12,12 +13,13 @@ header{
     color: #3a2e0e;
 }
 .header-background {
-    background-image: url("../images/header.png");
-    background-size: 100% 100%;
+    background: radial-gradient(circle, rgba(240,187,98,1) 5%, rgba(158,166,93,1) 38%, rgba(244,238,169,1) 70%, rgba(6,70,53,1) 99%);
     outline: #a10e8e inset 2px;
-    background-repeat: no-repeat;
-    margin-top: 0px;
-    padding-top: 0px;
+
+}
+.header-nav-background{
+    background: radial-gradient(circle, rgba(240,187,98,1) 5%, rgba(158,166,93,1) 38%, rgba(244,238,169,1) 70%, rgba(6,70,53,1) 99%); !important;
+    color: rgb(109, 224, 194) !important;
 }
 nav{
     margin: 0px;
@@ -26,4 +28,3 @@ nav{
 a{
     color: #3a2e0e;
 }
-

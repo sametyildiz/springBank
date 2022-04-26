@@ -1,5 +1,6 @@
 package com.springbank.users.customer;
 
+import com.springbank.security.Credentials;
 import com.springbank.users.customer.bankaccount.Account;
 import com.springbank.users.customer.bankaccount.AccountService;
 import com.springbank.users.customer.address.Address;
@@ -26,6 +27,7 @@ class CustomerServiceTest {
     private Customer customer2;
     private Account account;
 
+    private static int customerCount = 0;
     private Account account2;
     private Account account3;
 
@@ -37,9 +39,16 @@ class CustomerServiceTest {
         account = generateAccount();
         account2 = generateAccount();
         account3 = generateAccount();
+        Credentials c1 = generateCredential();
+        Credentials c2 = generateCredential();
 
         customer = generateCustomer();
+        c1.setUser(customer);
+        customer.setCredentials(c1);
+
         customer2 = generateCustomer();
+        c2.setUser(customer2);
+        customer2.setCredentials(c2);
 
         account.setCustomer(customer);
         account3.setCustomer(customer);
@@ -95,5 +104,10 @@ class CustomerServiceTest {
         return address;
     }
 
-
+    public Credentials generateCredential(){
+        return new Credentials(){{
+            setNId("11111111" + customerCount++);
+            setPassword("1234");
+        }};
+    }
 }

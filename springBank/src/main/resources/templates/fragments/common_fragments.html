@@ -3,29 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Header Footer</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
+
+    <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+
+    <script th:src="@{/jq/jquery-3.6.0.min.js}"></script>
+
 </head>
 <body>
 <th:block th:fragment="common-header">
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            acquireAuthentication('user-profile', 'account-options', 'login-link', 'logout-link', 'sign-up');
+        });
+
+    </script>
     <header>
-        <link rel="stylesheet" th:href="@{/css/header.css}">
         <div th:class="header-background">
             <h1 class="header-title" th:text="#{header.common.title}" >Spring Bank</h1>
         </div>
-        <nav>
-            <div style="float:left">
-            <a th:text="#{header.menu.home}">Home</a>|
-            <a th:text="#{header.menu.profile}">Profile</a>|
-            <a th:text="#{header.menu.options}">Options</a>
-            </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light header-nav-background">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav col-sm-6">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:text="#{header.menu.home}" th:href="@{/welcome}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="user-profile" class="nav-link" th:text="#{header.menu.profile}">Profile</a>
+                        </li>
 
-            <div style="float:right" >
-            <a th:text="#{header.menu.login}">Login</a>
-            <a th:text="#{header.menu.logout}">Logout</a>
+                        <li class="nav-item dropdown">
+                            <a id="account-options" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"
+                               th:text="#{header.menu.options}">Options</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Para Aktarma</a></li>
+                                <li><a class="dropdown-item" href="#">Kredi Kartı İşlemleri</a></li>
+                                <li><a class="dropdown-item" href="#">Kredi İşlemleri</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul  class="navbar-nav col-sm-6 d-flex justify-content-end">
+                        <li class="nav-item">
+                            <a id="login-link" class="nav-link" th:text="#{header.menu.login}"  th:href="@{/auth/login}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="logout-link" class="nav-link" th:text="#{header.menu.logout}" th:href="@{/auth/logout}">Logout</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="sign-up" class="nav-link" th:text="#{header.menu.signup}">Sign Up</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
-        <br>
-        <br>
     </header>
 </th:block>
 

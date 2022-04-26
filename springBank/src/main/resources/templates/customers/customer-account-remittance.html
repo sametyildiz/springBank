@@ -4,38 +4,44 @@
     <meta charset="UTF-8">
     <title>Remittance</title>
     <link rel="stylesheet" th:href="@{/css/account-list.css}">
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
+
+    <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+
+    <script th:src="@{/jq/jquery-3.6.0.min.js}"></script>
 </head>
 <header th:replace="fragments/common_fragments::common-header">Header</header>
 <body>
 
-<!--    <div>-->
-<!--        <form th:action="@{/transaction/${id}/remittance}" method="post" th:object="remittance">-->
-<!--            <fieldset>-->
-<!--            <table>-->
-<!--                <h3 th:text="#{account.list.title}">Accounts List</h3>-->
-<!--                <thead>-->
-<!--                <th th:text="#{account.info.ID}">Account ID</th>-->
-<!--                <th th:text="#{account.info.branchCode}">Branch Code</th>-->
-<!--                <th th:text="#{account.info.balance}">Balance</th>-->
-<!--                <th th:text="#{account.info.currency}">Currency</th>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="account : ${accountList.getContent()}">-->
+    <div>
+        <form th:action="@{/transaction/${id}/remittance}" method="post" th:object="remittance">
+            <fieldset>
+            <table>
+                <h3 th:text="#{account.list.title}">Accounts List</h3>
+                <thead>
+                <th th:text="#{account.info.ID}">Account ID</th>
+                <th th:text="#{account.info.branchCode}">Branch Code</th>
+                <th th:text="#{account.info.balance}">Balance</th>
+                <th th:text="#{account.info.currency}">Currency</th>
+                </thead>
+                <tbody>
+                <tr th:each="account : ${accountList.getContent()}">
 
-<!--                    <td>-->
-<!--                        <input type="radio" th:id="html" th:name="accountChoice" th:value="${account.ID}" th:field="*{remittance.senderID}">-->
-<!--                        <label th:for="${account.ID}" th:text="${account.ID()}"></label>-->
-<!--                    </td>-->
-<!--                    <td th:text="${account.branchCode()}"></td>-->
-<!--                    <td th:text="${account.balance()}"></td>-->
-<!--                    <td th:text="${account.currency()}"></td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            </fieldset>-->
-<!--            <div>-->
-<!--                <button type="submit" th:text="#{account.remittance.submit}">Ok</button>-->
-<!--            </div>-->
+                    <td>
+                        <input type="radio" th:id="html" th:name="accountChoice" th:value="${account.ID}" th:field="*{remittance.senderID}">
+                        <label th:for="${account.ID}" th:text="${account.ID()}"></label>
+                    </td>
+                    <td th:text="${account.branchCode()}"></td>
+                    <td th:text="${account.balance()}"></td>
+                    <td th:text="${account.currency()}"></td>
+                </tr>
+                </tbody>
+            </table>
+            </fieldset>
+            <div>
+                <button type="submit" th:text="#{account.remittance.submit}">Ok</button>
+            </div>
 
         </form>
     </div>

@@ -43,8 +43,8 @@ class AccountServiceTest {
         a1 = generateAccount();
         a2 = generateAccount();
 
-        cd1.setCustomer(c1);
-        cd2.setCustomer(c2);
+        cd1.setUser(c1);
+        cd2.setUser(c2);
 
         c1.setCredentials(cd1);
         c2.setCredentials(cd2);
@@ -137,7 +137,7 @@ class AccountServiceTest {
 
     public Credentials generateCredential(){
         return new Credentials(){{
-            setNid("11111111" + customerCount++);
+            setNId("11111111" + customerCount++);
             setPassword("1234");
         }};
     }

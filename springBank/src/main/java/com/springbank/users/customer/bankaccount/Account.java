@@ -39,7 +39,7 @@ public class Account {
     @ToString.Exclude
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "customer_id" , referencedColumnName = "ID")
+    @JoinColumn(name = "customerId" , referencedColumnName = "ID")
     private Customer customer;
 
     @Column(nullable = false)

@@ -12,10 +12,12 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerDAO customerDAO;
 
+
     @Transactional(timeout = 100)
     public boolean addCustomer(Customer customer) {
         if(customer == null)
             return false;
+
         customerDAO.save(customer);
         return true;
     }
