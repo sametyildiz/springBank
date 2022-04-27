@@ -191,3 +191,6 @@ buildNumber.properties
 .classpath
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,maven,java
+/src/main/resources/static/css/bootstrap/
+/src/main/resources/static/jq/
+/src/main/resources/static/js/bootstrap/
