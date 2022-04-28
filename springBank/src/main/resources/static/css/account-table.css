@@ -9,6 +9,5 @@ th{
 table {
     table-layout: fixed;
     width: 500px;
-    border-collapse: collapse;
     margin-top: 1%;
 }

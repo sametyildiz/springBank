@@ -23,3 +23,4 @@ function acquireAuthentication(profileLinkID, optionsLinkID, loginLinkID,
     }
     request.send();
 }
+

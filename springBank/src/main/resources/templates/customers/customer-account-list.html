@@ -1,45 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{account.list.title}">Accounts List</title>
-    <link rel="stylesheet" th:href="@{/css/account-list.css}">
+    <title>Customer Accounts</title>
+    <link rel="stylesheet" th:href="@{/css/account-table.css}">
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
+
+    <script th:src="@{/js/bootstrap/bootstrap.bundle.min.js}"></script>
+
+    <script th:src="@{/jq/jquery-3.6.0.min.js}"></script>
 </head>
 <header th:replace="fragments/common_fragments::common-header">Header</header>
 <body>
-<div th:if = "${accountList.getNumberOfElements() > 0}">
+    <div class="container d-flex justify-content-center">
+            <div class="row">
+                <div th:if = "${accountList.getNumberOfElements() > 0}">
+                    <table>
+                        <h3 th:text="#{account.list.title}">Accounts List</h3>
+                        <thead>
+                        <th th:text="#{account.info.ID}">Account ID</th>
+                        <th th:text="#{account.info.branchCode}">Branch Code</th>
+                        <th th:text="#{account.info.balance}">Balance</th>
+                        <th th:text="#{account.info.currency}">Currency</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="account : ${accountList.getContent()}">
+                            <td th:text="${account.ID()}"></td>
+                            <td th:text="${account.branchCode()}"></td>
+                            <td th:text="${account.balance()}"></td>
+                            <td th:text="${account.currency()}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <br>
 
-   <table>
-        <h3 th:text="#{account.list.title}">Accounts List</h3>
-        <thead>
-                  <th th:text="#{account.info.ID}">Account ID</th>
-                  <th th:text="#{account.info.branchCode}">Branch Code</th>
-                  <th th:text="#{account.info.balance}">Balance</th>
-                  <th th:text="#{account.info.currency}">Currency</th>
-              </thead>
-             <tbody>
-               <tr th:each="account : ${accountList.getContent()}">
-                   <td th:text="${account.ID()}"></td>
-                   <td th:text="${account.branchCode()}"></td>
-                   <td th:text="${account.balance()}"></td>
-                   <td th:text="${account.currency()}"></td>
-               </tr>
-           </tbody>
-          </table>
-    <br>
-    <div th:if="${accountList.getTotalPages() > 1}">
-        <th:block th:each="i: ${#numbers.sequence(0, accountList.getTotalPages() - 1)}">
-            <a th:href="@{/customer/1/accountList(page=${i} , size=3)}" th:text="${i + 1}"></a>
-<!--            /customer/{id} için authentication üzerinden credential username ile customera ulaş (spring security)-->
-        </th:block>
+                    <div th:if="${accountList.getTotalPages() > 1}">
+                        <th:block th:each="i: ${#numbers.sequence(0, accountList.getTotalPages() - 1)}">
+                            <a th:href="@{/account-options/info/accountList(page=${i} , size=3)}" th:text="${i + 1}"></a>
+                        </th:block>
+                    </div>
+
+                </div>
+
+                <div th:unless="${accountList.getNumberOfElements() > 0}">
+                    <p>Not found any account</p>
+
+                </div>
+
+            </div>
     </div>
 
-</div>
-
-<div th:unless="${accountList.getNumberOfElements() > 0}">
-    <p>Not found any account</p>
-
-</div>
 
 
 </body>

@@ -1,7 +1,9 @@
 package com.springbank.users.customer.bankaccount;
 
+import com.springbank.security.CredentialsService;
 import com.springbank.users.customer.Customer;
 import com.springbank.users.customer.CustomerService;
+import com.springbank.utils.InvalidAuthentication;
 import com.springbank.utils.InvalidInput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class AccountService {
     private final AccountDAO accountDAO;
     private final CustomerService customerService;
+
+    private final CredentialsService credentialsService;
     @Transactional(timeout = 100)
     public boolean saveAccount(Account account) {
         if(account == null)
@@ -31,6 +35,18 @@ public class AccountService {
         return accountDAO.findById(id);
     }
 
+    @Transactional(timeout = 100,readOnly = true)
+    public Optional<Account> getAccountWithAuth(Long accountID) throws InvalidAuthentication {
+        if(!isAuthenticated(accountID))
+            throw new InvalidAuthentication("You are not authorized to access this bank account");
+        return accountDAO.findById(accountID);
+    }
+
+    @Transactional(timeout = 100,readOnly = true,propagation = Propagation.MANDATORY)
+    public boolean isAuthenticated(Long accountID){
+        Long customerID = credentialsService.getAuthenticatedCustomerID();
+        return accountDAO.existsByCustomer_IDAndCustomer_BankAccount_ID(customerID,accountID);
+    }
 
     @Transactional(timeout = 100)
     public boolean deleteAccount(Account account) {
@@ -89,6 +105,10 @@ public class AccountService {
         if(customer.isEmpty())
             return null;
         return getAccountList(customer.get().getID(), page, size);
+    }
+
+    public Long getAuthenticatedCustomerID(){
+        return credentialsService.getAuthenticatedCustomerID();
     }
 
 }
