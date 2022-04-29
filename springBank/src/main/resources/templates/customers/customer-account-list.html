@@ -12,47 +12,78 @@
     <script th:src="@{/jq/jquery-3.6.0.min.js}"></script>
 </head>
 <header th:replace="fragments/common_fragments::common-header">Header</header>
-<body>
-    <div class="container d-flex justify-content-center">
-            <div class="row">
-                <div th:if = "${accountList.getNumberOfElements() > 0}">
-                    <table>
-                        <h3 th:text="#{account.list.title}">Accounts List</h3>
-                        <thead>
-                        <th th:text="#{account.info.ID}">Account ID</th>
-                        <th th:text="#{account.info.branchCode}">Branch Code</th>
-                        <th th:text="#{account.info.balance}">Balance</th>
-                        <th th:text="#{account.info.currency}">Currency</th>
-                        </thead>
-                        <tbody>
-                        <tr th:each="account : ${accountList.getContent()}">
-                            <td th:text="${account.ID()}"></td>
-                            <td th:text="${account.branchCode()}"></td>
-                            <td th:text="${account.balance()}"></td>
-                            <td th:text="${account.currency()}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <br>
+    <body>
+        <div class="container d-flex justify-content-center">
+                <div class="row">
+                    <div class="card" style="margin-top : 10%;">
 
-                    <div th:if="${accountList.getTotalPages() > 1}">
-                        <th:block th:each="i: ${#numbers.sequence(0, accountList.getTotalPages() - 1)}">
-                            <a th:href="@{/account-options/info/accountList(page=${i} , size=3)}" th:text="${i + 1}"></a>
-                        </th:block>
+                        <div th:if = "${accountList.getNumberOfElements() > 0}">
+                            <div class="card-header border border-dark bg-success p-2 text-dark bg-opacity-50">
+                                <h3 th:text="#{account.list.title}">Accounts List</h3>
+                            </div>
+
+
+                            <table class="table table-success table-striped table-hover">
+                                <thead>
+                                <th scope="col" th:text="#{account.info.ID}">Account ID</th>
+                                <th scope="col" th:text="#{account.info.branchCode}">Branch Code</th>
+                                <th scope="col" th:text="#{account.info.balance}">Balance</th>
+                                <th scope="col" th:text="#{account.info.currency}">Currency</th>
+                                </thead>
+                                <tbody>
+                                <tr th:each="account : ${accountList.getContent()}" style="cursor: pointer;"
+                                    th:onclick="'javascript:rowClicked(\'' + ${account.ID()} + '\');'">
+                                    <td th:text="${account.ID()}" style="padding-left: 4%;"></td>
+                                    <td th:text="${account.branchCode()}"></td>
+                                    <td th:text="${account.balance()}"></td>
+                                    <td th:text="${account.currency()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="card-footer d-flex justify-content-center">
+                            <div th:if="${accountList.getTotalPages() > 1}">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item">
+                                            <div th:if="${accountList.hasPrevious()}">
+                                                <a class="page-link" th:href="@{/account-options/info/accountList(page=${accountList.getNumber() - 1} , size=3)}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </div>
+                                            <div th:unless="${accountList.hasPrevious()}"></div>
+                                        </li>
+                                        <th:block th:each="i: ${#numbers.sequence(0, accountList.getTotalPages() - 1)}">
+                                            <li class="page-item"> <a class="page-link" th:href="@{/account-options/info/accountList(page=${i} , size=3)}" th:text="${i + 1}"></a></li>
+                                        </th:block>
+                                        <li class="page-item">
+                                            <div th:if="${accountList.hasNext()}">
+                                                <a class="page-link" th:href="@{/account-options/info/accountList(page=${accountList.getNumber() + 1} , size=3)}" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </div>
+                                            <div th:unless="${accountList.hasNext()}">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+
+                            <div th:unless="${accountList.getNumberOfElements() > 0}">
+                                <p>Not found any account</p>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-
-                <div th:unless="${accountList.getNumberOfElements() > 0}">
-                    <p>Not found any account</p>
-
-                </div>
-
-            </div>
-    </div>
-
-
-
-</body>
+        </div>
+    </body>
+    <script>
+        function rowClicked(value) {
+            location.href = "/account-options/info/" + value;
+        }
+    </script>
 <footer th:replace="fragments/common_fragments::common-footer">Footer</footer>
 </html>
