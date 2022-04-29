@@ -44,7 +44,6 @@ public class AccountController {
         Long id = accountService.getAuthenticatedCustomerID();
         Page<AccountResponsePagginate> response =
                 accountService.getCustomerAccounts(id,page,size);
-
         model.addAttribute("accountList", response);
 
         return "customers/customer-account-list";

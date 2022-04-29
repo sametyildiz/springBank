@@ -103,7 +103,7 @@ public class AccountService {
     public Page<AccountResponsePagginate> getCustomerAccounts(Long id, int page, int size) {
         Optional<Customer> customer = customerService.getCustomer(id);
         if(customer.isEmpty())
-            return null;
+           throw new InvalidInput("Customer ID does not exist");
         return getAccountList(customer.get().getID(), page, size);
     }
 
