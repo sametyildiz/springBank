@@ -50,10 +50,11 @@ public class AccountController {
     }
 
     @GetMapping("/remittance")
-    public String remittanceRequest(Model model,@PathVariable("id") Long id,
+    public String remittanceRequest(Model model,
                                     @RequestParam(defaultValue = "0") Integer page,
                                     @RequestParam(defaultValue = "3") Integer size) {
-        Page<AccountResponsePagginate> response = accountService.getCustomerAccounts(id,page,size);
+        Long customerID = accountService.getAuthenticatedCustomerID();
+        Page<AccountResponsePagginate> response = accountService.getCustomerAccounts(customerID,page,size);
 
         model.addAttribute("accountList", response);
         model.addAttribute("remittance", new RemittanceRequest());
@@ -62,9 +63,9 @@ public class AccountController {
 
     }
     @PostMapping("/remittance")
-    public String handleRemitanceRequest(@ModelAttribute("remittance") RemittanceRequest remittanceRequest){
+    public String handleRemittanceRequest(@ModelAttribute("remittance") RemittanceRequest remittanceRequest){
         accountService.remittance(remittanceRequest);
-        return "redirect:/transaction/{id}/accountList";
+        return "redirect:/account-options/info/" + remittanceRequest.getSenderID();
     }
 }
 record AccountResponse(Long ID,double balance,int branchCode, Currency currency ,
