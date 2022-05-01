@@ -59,7 +59,7 @@ public class AccountService {
     @Transactional(timeout = 100,readOnly = true)
     public Page<AccountResponsePagginate> getAccountList(Long ID, int page, int pageSize){
 
-        return accountDAO.findAllByCustomer_ID(ID, PageRequest.of(page, pageSize)).map(
+        return accountDAO.findAllByCustomer_IDOrderByIDAsc(ID, PageRequest.of(page, pageSize)).map(
                 m -> new AccountResponsePagginate(m.getID(),m.getBalance(),m.getBranchCode(),m.getCurrency()));
     }
 

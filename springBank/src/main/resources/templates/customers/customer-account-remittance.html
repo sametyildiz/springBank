@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Remittance</title>
-    <link rel="stylesheet" th:href="@{/css/account-list.css}">
+    <link rel="stylesheet" th:href="@{/css/account-table.css}">
 
     <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}" />
 
@@ -13,40 +13,114 @@
 </head>
 <header th:replace="fragments/common_fragments::common-header">Header</header>
 <body>
-
-    <div>
-        <form th:action="@{/transaction/${id}/remittance}" method="post" th:object="remittance">
-            <fieldset>
-            <table>
-                <h3 th:text="#{account.list.title}">Accounts List</h3>
-                <thead>
-                <th th:text="#{account.info.ID}">Account ID</th>
-                <th th:text="#{account.info.branchCode}">Branch Code</th>
-                <th th:text="#{account.info.balance}">Balance</th>
-                <th th:text="#{account.info.currency}">Currency</th>
-                </thead>
-                <tbody>
-                <tr th:each="account : ${accountList.getContent()}">
-
-                    <td>
-                        <input type="radio" th:id="html" th:name="accountChoice" th:value="${account.ID}" th:field="*{remittance.senderID}">
-                        <label th:for="${account.ID}" th:text="${account.ID()}"></label>
-                    </td>
-                    <td th:text="${account.branchCode()}"></td>
-                    <td th:text="${account.balance()}"></td>
-                    <td th:text="${account.currency()}"></td>
-                </tr>
-                </tbody>
-            </table>
-            </fieldset>
-            <div>
-                <button type="submit" th:text="#{account.remittance.submit}">Ok</button>
+<div class="container d-flex justify-content-center">
+    <fieldset>
+    <form th:action="@{/account-options/remittance}" method="post" th:object="${remittance}">
+    <div class="row">
+        <div class="card" style="margin-top : 10%;">
+            <br>
+            <div th:if = "${accountList.getNumberOfElements() > 0}">
+                <div class="card-header border border-dark bg-success p-2 text-dark bg-opacity-50">
+                    <h3 th:text="#{account.list.title}">Accounts List</h3>
+                </div>
+                <table class="table table-success table-striped table-hover">
+                    <thead>
+                    <th scope="col" th:text="#{account.info.ID}">Account ID</th>
+                    <th scope="col" th:text="#{account.info.branchCode}">Branch Code</th>
+                    <th scope="col" th:text="#{account.info.balance}">Balance</th>
+                    <th scope="col" th:text="#{account.info.currency}">Currency</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account : ${accountList.getContent()}">
+                        <td>
+                            <input type="radio"  th:name="accountChoice" th:value="${account.ID}" th:field="*{senderID}" onchange="currencyChange(this)">
+                            <label th:for="${account.ID}" th:text="${account.ID()}" style="padding-left: 4%;"></label>
+                        </td>
+                        <td th:text="${account.branchCode()}"></td>
+                        <td th:text="${account.balance()}"></td>
+                        <td th:id="${account.ID}" th:text="${account.currency()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
-        </form>
-    </div>
+            <div class="card-footer d-flex justify-content-center">
+                <div th:if="${accountList.getTotalPages() > 1}">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <div th:if="${accountList.hasPrevious()}">
+                                    <a class="page-link" th:href="@{/account-options/remittance(page=${accountList.getNumber() - 1} , size=3)}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </div>
+                                <div th:unless="${accountList.hasPrevious()}"></div>
+                            </li>
+                            <th:block th:each="i: ${#numbers.sequence(0, accountList.getTotalPages() - 1)}">
+                                <li class="page-item"> <a class="page-link" th:href="@{/account-options/remittance(page=${i} , size=3)}" th:text="${i + 1}"></a></li>
+                            </th:block>
+                            <li class="page-item">
+                                <div th:if="${accountList.hasNext()}">
+                                    <a class="page-link" th:href="@{/account-options/remittance(page=${accountList.getNumber() + 1} , size=3)}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </div>
+                                <div th:unless="${accountList.hasNext()}"></div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div th:unless="${accountList.getNumberOfElements() > 0}">
+                    <p>Not found any account</p>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <label for="receiverID" class="form-label" th:text="#{account.remittance.receiverID} + ' :'">Receiver ID</label>
+                    <input type="text" class="form-control" id="receiverID" th:field="*{receiverID}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <label for="receiverName" class="form-label" th:text="#{account.remittance.receiverName} + ' :'">Receiver Name</label>
+                    <input type="text" class="form-control" id="receiverName" th:field="*{receiverName}">
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label for="receiverSurname" class="form-label" th:text="#{account.remittance.receiverSurname} + ' :'">Receiver Surname</label>
+                    <input type="text" class="form-control" id="receiverSurname" th:field="*{receiverSurname}">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label for="amount" class="form-label" th:text="#{account.remittance.amount} + ' :'" >Amount</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <input type="text" class="form-control" id="amount" th:field="*{amount}">
+                </div>
+                <div class="col-6 mb-3">
+                    <p class="fst-italic text-muted" id="currency">TRY</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col d-flex justify-content-center ">
+                    <button type="submit" class="btn btn-secondary"th:text="#{account.remittance.submit}">Ok</button>
+                </div>
+            </div>
+            <br>
+        </div>
+
+    </div>
+    </form>
+    </fieldset>
+</div>
 
 </body>
 <footer th:replace="fragments/common_fragments::common-footer">Footer</footer>
+
+<script src="/js/remittance.js"></script>
 </html>
