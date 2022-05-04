@@ -15,7 +15,7 @@
 <body>
 <div class="container d-flex justify-content-center">
     <fieldset>
-    <form th:action="@{/account-options/remittance}" method="post" th:object="${remittance}">
+    <form th:action="@{/account-options/remittance}" method="post" th:object="${remittance}" id="remmitanceForm">
     <div class="row">
         <div class="card" style="margin-top : 10%;">
             <br>
@@ -108,13 +108,50 @@
 
             <div class="row">
                 <div class="col d-flex justify-content-center ">
-                    <button type="submit" class="btn btn-secondary"th:text="#{account.remittance.submit}">Ok</button>
+                    <button type="button"  id="submitBtn" class="btn btn-secondary" th:text="#{account.remittance.submit}"
+                            data-bs-toggle="modal" data-bs-target="#confirm-submit">Ok</button>
+                    <button type="reset" class="btn btn-secondary"th:text="#{account.remittance.reset}">Clear</button>
                 </div>
             </div>
             <br>
         </div>
-
     </div>
+
+        <div class="modal fade" id="confirm-submit" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel" th:text="#{account.remittance.confirm.title}">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tr>
+                                <th th:text="#{account.remittance.confirm.senderID}"></th>
+                                <td id="confirmSenderID"></td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.remittance.confirm.receiverID}"></th>
+                                <td id="confirmReceiverID"></td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.remittance.confirm.receiverFullName}"></th>
+                                <td id="confirmReceiverName"></td>
+                            </tr>
+                            <tr>
+                                <th th:text="#{account.remittance.confirm.amount}"></th>
+                                <td id="confirmAmount"></td>
+                            </tr>
+                        </table>
+                        <p th:text="#{account.remittance.confirm.dialog}">Do you confirm the remittance ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{account.remittance.confirm.cancel}">Close</button>
+                        <button type="submit" form="remmitanceForm" class="btn btn-primary" th:text="#{account.remittance.confirm.submit}">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
     </fieldset>
 </div>

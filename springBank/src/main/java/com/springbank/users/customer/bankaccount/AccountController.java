@@ -66,6 +66,8 @@ public class AccountController {
     public String handleRemittanceRequest(@ModelAttribute("remittance") RemittanceRequest remittanceRequest){
         accountService.remittance(remittanceRequest);
         return "redirect:/account-options/info/" + remittanceRequest.getSenderID();
+
+        //TODO: redirect to the receipt page--dekont
     }
 }
 record AccountResponse(Long ID,double balance,int branchCode, Currency currency ,
