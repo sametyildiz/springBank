@@ -13,7 +13,8 @@ public final class RemittanceRequest {
     private Long receiverID;
     private String receiverName;
     private String receiverSurname;
-    private double amount;
+    private Double amount;
+
 
     public RemittanceRequest(Long senderID, Long receiverID, String receiverName, String receiverSurname, Double amount) {
         this.senderID = senderID;

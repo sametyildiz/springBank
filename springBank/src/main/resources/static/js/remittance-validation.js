@@ -10,7 +10,7 @@ $(document).ready(function(){
     var receiverID = new InputValidation('#receiverID',new RegExp('^[0-9]{1,5}$'));
     var receiverName = new InputValidation('#receiverName',new RegExp('(^(([a-zA-Z]{2,50})(\\s?))+$)'));
     var receiverSurname = new InputValidation('#receiverSurname',new RegExp('^[a-zA-Z]{2,30}$'));
-    var amount = new InputValidation('#amount', new RegExp('^[\\d]+(\\.\\d{2})?$'));
+    var amount = new InputValidation('#amount', new RegExp('^[\\d]+(\\.\\d{1,2})?$'));
 
     $.fn.invalidMessage = function(title,message){
         alert(title + "\n" +message);
