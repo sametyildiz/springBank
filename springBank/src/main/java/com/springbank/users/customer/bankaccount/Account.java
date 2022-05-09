@@ -47,6 +47,4 @@ public class Account {
 
 }
 
-enum Currency {
-    EUR, USD, GBP, TRY
-}
+
