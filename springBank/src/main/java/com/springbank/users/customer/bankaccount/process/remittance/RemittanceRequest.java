@@ -1,4 +1,4 @@
-package com.springbank.users.customer.bankaccount;
+package com.springbank.users.customer.bankaccount.process.remittance;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -17,6 +17,7 @@ import java.util.Optional;
 public class AccountController {
     private final AccountService accountService;
 
+
     @GetMapping(value = "/info/{id}")
     public String getAccount(Model model, @PathVariable("id") Long id) throws InvalidAuthentication {
         Optional<Account> account = accountService.getAccountWithAuth(id);
@@ -49,26 +50,7 @@ public class AccountController {
         return "customers/customer-account-list";
     }
 
-    @GetMapping("/remittance")
-    public String remittanceRequest(Model model,
-                                    @RequestParam(defaultValue = "0") Integer page,
-                                    @RequestParam(defaultValue = "3") Integer size) {
-        Long customerID = accountService.getAuthenticatedCustomerID();
-        Page<AccountResponsePagginate> response = accountService.getCustomerAccounts(customerID,page,size);
 
-        model.addAttribute("accountList", response);
-        model.addAttribute("remittance", new RemittanceRequest());
-
-        return "customers/customer-account-remittance";
-
-    }
-    @PostMapping("/remittance")
-    public String handleRemittanceRequest(@ModelAttribute("remittance") RemittanceRequest remittanceRequest){
-        accountService.remittance(remittanceRequest);
-        return "redirect:/account-options/info/" + remittanceRequest.getSenderID();
-
-        //TODO: redirect to the receipt page--dekont
-    }
 }
 record AccountResponse(Long ID,double balance,int branchCode, Currency currency ,
                        long customerId, String customerName,String customerSurname){
