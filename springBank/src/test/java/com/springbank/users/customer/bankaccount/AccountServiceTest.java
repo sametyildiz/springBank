@@ -3,6 +3,8 @@ package com.springbank.users.customer.bankaccount;
 import com.springbank.security.Credentials;
 import com.springbank.users.customer.Customer;
 import com.springbank.users.customer.CustomerService;
+import com.springbank.users.customer.bankaccount.process.remittance.RemittanceRequest;
+import com.springbank.users.customer.bankaccount.process.remittance.RemittanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,6 +24,8 @@ class AccountServiceTest {
     private CustomerService customerService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private RemittanceService remittanceService;
     private static int customerCount = 0;
     private Customer c1;
     private Customer c2;
@@ -69,11 +73,11 @@ class AccountServiceTest {
     }
     @Test
     void remittanceNameEquals(){
-        assertDoesNotThrow(()->accountService.remittance(
+        assertDoesNotThrow(()->remittanceService.remittance(
                 new RemittanceRequest(a1.getID(),a2.getID(),"Test","test",100.0)));
-        assertDoesNotThrow(()->accountService.remittance(
+        assertDoesNotThrow(()->remittanceService.remittance(
                 new RemittanceRequest(a1.getID(),a2.getID(),"test","test",100.0)));
-        assertFalse(accountService.remittance(
+        assertFalse(remittanceService.remittance(
                 new RemittanceRequest(a1.getID(),a2.getID(),"Tset","test",100.0)));
     }
 
@@ -127,7 +131,7 @@ class AccountServiceTest {
     @ParameterizedTest
     @MethodSource("remittanceRequests")
     void checkRemittanceResult(RemittanceRequest request, double receiverBalance, double senderBalance){
-        accountService.remittance(request);
+        remittanceService.remittance(request);
         assertEquals(receiverBalance, accountService.getAccount(request.getReceiverID()).get().getBalance());
         assertEquals(senderBalance, accountService.getAccount(request.getSenderID()).get().getBalance());
     }
@@ -142,8 +146,7 @@ class AccountServiceTest {
 
         return customer;
     }
-
-    public Credentials generateCredential(){
+    private Credentials generateCredential(){
         return new Credentials(){{
             setNId("11111111" + customerCount++);
             setPassword("1234");
@@ -154,4 +157,18 @@ class AccountServiceTest {
         account.setBranchCode(1000);
         return account;
     }
+
+
+   /* @Test
+    void remittance() {
+        double amount = 100;
+        double senderBalance = accountService.getAccount(a1.getID()).get().getBalance();
+        double reciverBalance = accountService.getAccount(a2.getID()).get().getBalance();
+        RemittanceRequest request = new RemittanceRequest(a1.getID(),a2.getID(),"test","test",amount);
+        accountService.remittance(request);
+        assertEquals(accountService.getAccount(request.getSenderID()).get().getBalance() - amount,
+                senderBalance);
+        assertEquals(accountService.getAccount(request.getReceiverID()).get().getBalance() + amount,
+                reciverBalance);
+    }*/
 }
