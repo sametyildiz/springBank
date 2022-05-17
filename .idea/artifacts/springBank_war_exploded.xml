@@ -92,6 +92,11 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.3.18" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-core:5.6.2" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-crypto:5.6.2" />
+          <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-data-mongodb:2.6.6" />
+          <element id="library" level="project" name="Maven: org.mongodb:mongodb-driver-sync:4.4.2" />
+          <element id="library" level="project" name="Maven: org.mongodb:bson:4.4.2" />
+          <element id="library" level="project" name="Maven: org.mongodb:mongodb-driver-core:4.4.2" />
+          <element id="library" level="project" name="Maven: org.springframework.data:spring-data-mongodb:3.3.3" />
         </element>
       </element>
       <element id="directory" name="META-INF">

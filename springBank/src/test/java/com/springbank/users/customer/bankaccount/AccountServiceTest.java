@@ -27,13 +27,10 @@ class AccountServiceTest {
     @Autowired
     private RemittanceService remittanceService;
     private static int customerCount = 0;
-    private Customer c1;
-    private Customer c2;
+    private Customer c1 ,c2;
 
-    private Credentials cd1;
-    private Credentials cd2;
-    private Account a1;
-    private Account a2;
+    private Credentials cd1 ,cd2;
+    private Account a1 ,a2;
     @BeforeEach
     void setUp() {
         cd1 = generateCredential();
@@ -74,36 +71,36 @@ class AccountServiceTest {
     @Test
     void remittanceNameEquals(){
         assertDoesNotThrow(()->remittanceService.remittance(
-                new RemittanceRequest(a1.getID(),a2.getID(),"Test","test",100.0)));
+                new RemittanceRequest(a1.getID(),a2.getID(),"Test","test",100.0 , Currency.TRY)));
         assertDoesNotThrow(()->remittanceService.remittance(
-                new RemittanceRequest(a1.getID(),a2.getID(),"test","test",100.0)));
+                new RemittanceRequest(a1.getID(),a2.getID(),"test","test",100.0, Currency.TRY)));
         assertFalse(remittanceService.remittance(
-                new RemittanceRequest(a1.getID(),a2.getID(),"Tset","test",100.0)));
+                new RemittanceRequest(a1.getID(),a2.getID(),"Tset","test",100.0, Currency.TRY)));
     }
 
     private static Stream<Arguments> invalidRemittanceRequests(){
         return Stream.of(
-                Arguments.of(new RemittanceRequest(100000L,100000L,"test","test",100.0)
+                Arguments.of(new RemittanceRequest(100000L,100000L,"test","test",100.0, Currency.TRY)
                         , IllegalArgumentException.class, "Invalid input: Sender and receiver can't be the same"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",10000.0)
+                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",10000.0, Currency.TRY)
                         , IllegalArgumentException.class , "Invalid input: Sender account does not have enough balance"),
-                Arguments.of( new RemittanceRequest(10100000L,100001L,"Test","test",100.0)
+                Arguments.of( new RemittanceRequest(10100000L,100001L,"Test","test",100.0, Currency.TRY)
                         , IllegalArgumentException.class , "Invalid input: Sender account ID is not valid"),
-                Arguments.of( new RemittanceRequest(100000L,20L,"Test","test",100.0)
+                Arguments.of( new RemittanceRequest(100000L,20L,"Test","test",100.0, Currency.TRY)
                         , IllegalArgumentException.class , "Invalid input: Receiver account does not exist"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",0.0)
+                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",0.0, Currency.TRY)
                         , IllegalArgumentException.class , "Invalid input: Amount must be greater than 0"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",-100.0)
+                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",-100.0, Currency.TRY)
                         , IllegalArgumentException.class , "Invalid input: Amount is not valid"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"Test-2","test",100.0),
+                Arguments.of( new RemittanceRequest(100000L,100001L,"Test-2","test",100.0, Currency.TRY),
                         IllegalArgumentException.class , "Invalid input: Receiver name is not valid"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"test","te st",100.0),
+                Arguments.of( new RemittanceRequest(100000L,100001L,"test","te st",100.0, Currency.TRY),
                         IllegalArgumentException.class , "Invalid input: Receiver surname is not valid"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"test","test",-10000.0),
+                Arguments.of( new RemittanceRequest(100000L,100001L,"test","test",-10000.0, Currency.TRY),
                         IllegalArgumentException.class , "Invalid input: Amount is not valid"),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"test","test",Double.valueOf("-000.1")),
+                Arguments.of( new RemittanceRequest(100000L,100001L,"test","test",Double.valueOf("-000.1"), Currency.TRY),
                         IllegalArgumentException.class , "Invalid input: Amount is not valid"),
-                Arguments.of( new RemittanceRequest(1000000L,100001L,"test","test",10000.0),
+                Arguments.of( new RemittanceRequest(1000000L,100001L,"test","test",10000.0, Currency.TRY),
                         IllegalArgumentException.class , "Invalid input: Sender account ID is not valid")
 
         );
@@ -121,9 +118,9 @@ class AccountServiceTest {
 
     private static Stream<Arguments> remittanceRequests(){
         return Stream.of(
-                Arguments.of(new RemittanceRequest(100000L,100001L,"test","test",100.0)
+                Arguments.of(new RemittanceRequest(100000L,100001L,"test","test",100.0, Currency.TRY)
                         ,100,900),
-                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",550.5)
+                Arguments.of( new RemittanceRequest(100000L,100001L,"Test","test",550.5, Currency.TRY)
                 ,650.5,900-550.5)
 
         );

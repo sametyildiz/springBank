@@ -3,6 +3,9 @@ package com.springbank.users.customer.bankaccount;
 import com.springbank.security.CredentialsService;
 import com.springbank.users.customer.Customer;
 import com.springbank.users.customer.CustomerService;
+import com.springbank.users.customer.bankaccount.history.AccountHistory;
+import com.springbank.users.customer.bankaccount.history.AccountHistoryService;
+import com.springbank.users.customer.bankaccount.history.details.ProcessDetails;
 import com.springbank.utils.InvalidAuthentication;
 import com.springbank.utils.InvalidInput;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Service
 public class AccountService {
     private final AccountDAO accountDAO;
+    private final AccountHistoryService accountHistoryService;
     private final CustomerService customerService;
     private final CredentialsService credentialsService;
 
@@ -83,6 +85,20 @@ public class AccountService {
         accountDAO.updateBalanceByPayment(id, -amount);
     }
 
+    public ProcessDetails getProcessDetails(Long id) {
+        return accountHistoryService.getProcessDetailsProcessId(id);
+    }
+    public List<AccountHistory> getAllAccountHistory(Long id){
+        return accountHistoryService.getAllHistoryByAccountId(id);
+    }
+
+    public AccountHistory saveProcess(AccountHistory accountHistory) {
+        return accountHistoryService.saveAndGetProccess(accountHistory);
+    }
+
+    public void saveProcessDetails(ProcessDetails processDetails) {
+        accountHistoryService.saveProcessDetails(processDetails);
+    }
     public Long getAuthenticatedCustomerID(){
         return credentialsService.getAuthenticatedCustomerID();
     }
