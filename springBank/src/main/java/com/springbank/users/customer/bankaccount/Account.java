@@ -2,13 +2,17 @@ package com.springbank.users.customer.bankaccount;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springbank.users.customer.Customer;
+import com.springbank.users.customer.bankaccount.history.AccountHistory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
+import java.util.Set;
+import java.util.SortedSet;
 
 @Entity
 @Getter
@@ -44,6 +48,11 @@ public class Account {
 
     @Column(nullable = false)
     private int branchCode;
+
+    @SortNatural
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private SortedSet<AccountHistory> accountHistory;
+
 
 }
 

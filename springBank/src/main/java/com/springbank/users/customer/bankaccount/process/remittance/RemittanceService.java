@@ -3,6 +3,9 @@ package com.springbank.users.customer.bankaccount.process.remittance;
 import com.springbank.users.customer.bankaccount.Account;
 import com.springbank.users.customer.bankaccount.AccountResponsePagginate;
 import com.springbank.users.customer.bankaccount.AccountService;
+import com.springbank.users.customer.bankaccount.history.AccountHistory;
+import com.springbank.users.customer.bankaccount.history.ProcessType;
+import com.springbank.users.customer.bankaccount.history.details.ProcessDetails;
 import com.springbank.utils.InvalidInput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -32,12 +34,13 @@ public class RemittanceService {
     }
     @Transactional(timeout = 100)
     public boolean remittance(RemittanceRequest remittanceRequest){
+        /*TODO : currency from posting*/
         if(!checkRemittanceRequest(remittanceRequest)){
             return false;
         }
         accountService.updateBalanceByOutlow(remittanceRequest.getSenderID(), remittanceRequest.getAmount());
         accountService.updateBalanceByInlow(remittanceRequest.getReceiverID(),remittanceRequest.getAmount());
-
+        saveProcess(remittanceRequest);
         return true;
     }
     @Transactional(timeout = 100)
@@ -62,7 +65,7 @@ public class RemittanceService {
         if(sender.getBalance() < remittanceRequest.getAmount()){
             throw new InvalidInput("Sender account does not have enough balance");
         }
-        if(!sender.getCurrency().equals(receiver.getCurrency())){
+        if( remittanceRequest.getCurrency() != sender.getCurrency() || !sender.getCurrency().equals(receiver.getCurrency())){
             throw new InvalidInput("Sender and receiver account must have the same currency");
         }
         if(receiver.getID() == remittanceRequest.getReceiverID()
@@ -86,12 +89,50 @@ public class RemittanceService {
             throw new InvalidInput("Receiver surname is not valid");
     }
 
-
     private void trimRemittanceRequest(RemittanceRequest remittanceRequest){
         if(remittanceRequest.getReceiverName() == null || remittanceRequest.getReceiverSurname() == null){
             throw new InvalidInput("Receiver name or surname is null");
         }
         remittanceRequest.setReceiverName(remittanceRequest.getReceiverName().trim());
         remittanceRequest.setReceiverSurname(remittanceRequest.getReceiverSurname().trim());
+    }
+
+    @Transactional(timeout = 100, propagation = Propagation.MANDATORY)
+    public void saveProcess(RemittanceRequest remittanceRequest){
+        Map.Entry<AccountHistory,AccountHistory> entry = createProcessHistory(remittanceRequest);
+        ProcessDetails details = createProcessDetails(remittanceRequest);
+        AccountHistory senderHistory = accountService.saveProcess(entry.getKey());
+        accountService.saveProcess(entry.getValue());
+
+        details.setProcessId(senderHistory.getProcessId());
+        accountService.saveProcessDetails(details);
+    }
+    private Map.Entry<AccountHistory,AccountHistory> createProcessHistory(RemittanceRequest remittanceRequest){
+        Calendar calendar = Calendar.getInstance();
+        AccountHistory senderHistory = new AccountHistory();
+        AccountHistory receiverHistory = new AccountHistory();
+
+        senderHistory.setAccount(accountService.getAccount(remittanceRequest.getSenderID()).get());
+        senderHistory.setProcessType(ProcessType.Outflow);
+        senderHistory.setProcessDateTime(calendar);
+
+        receiverHistory.setAccount(accountService.getAccount(remittanceRequest.getReceiverID()).get());
+        receiverHistory.setProcessType(ProcessType.Inflow);
+        receiverHistory.setProcessDateTime(calendar);
+
+
+        return new AbstractMap.SimpleEntry<>(senderHistory,receiverHistory);
+    }
+
+    private ProcessDetails createProcessDetails(RemittanceRequest remittanceRequest){
+        ProcessDetails processDetails = new ProcessDetails();
+        processDetails.setProcessType(ProcessType.Transfer);
+        processDetails.setAmount(remittanceRequest.getAmount());
+        processDetails.setCurrency(remittanceRequest.getCurrency());
+        processDetails.setReciverId(remittanceRequest.getReceiverID());
+        processDetails.setReciverName(String.format("%s %s",
+                remittanceRequest.getReceiverName(),remittanceRequest.getReceiverSurname()));
+
+        return processDetails;
     }
 }
