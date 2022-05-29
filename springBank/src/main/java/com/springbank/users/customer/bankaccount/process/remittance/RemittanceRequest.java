@@ -7,23 +7,23 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public final class RemittanceRequest {
+public class RemittanceRequest {
     private Long senderID;
     private Long receiverID;
     private String receiverName;
     private String receiverSurname;
     private Double amount;
-
     private Currency currency;
 
+    private String description = "";
 
-    public RemittanceRequest(Long senderID, Long receiverID, String receiverName, String receiverSurname, Double amount, Currency currency) {
+    public RemittanceRequest(Long senderID, Long receiverID, String receiverName, String receiverSurname, Double amount, String currency) {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.receiverName = receiverName;
         this.receiverSurname = receiverSurname;
         this.amount = amount;
-        this.currency = currency;
+        this.currency = Currency.valueOf(currency);
     }
 
 

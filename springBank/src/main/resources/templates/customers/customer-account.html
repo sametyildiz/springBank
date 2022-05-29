@@ -13,9 +13,9 @@
 </head>
 <header th:replace="fragments/common_fragments::common-header">Header</header>
 <body>
-        <div class="container d-flex justify-content-center">
+        <div class="container">
             <div class="row">
-                    <div class="card" style="margin-top: 10%;">
+                 <div class="card" style="margin-top: 10%;">
                         <div class="card-header border border-dark bg-success p-2 text-dark bg-opacity-50">
                             <h3 th:text="#{account.info.title}">Account Information</h3>
                         </div>
@@ -43,11 +43,75 @@
                             </tr>
                             </tbody>
                         </table>
-                    </div>
-<!--                    TODO  adding bank-account-history -->
+                  </div>
             </div>
-        </div>
 
+            <div class="row">
+                <div class="card" style="margin-top : 10%;">
+                    <div th:if = "${history.getNumberOfElements() > 0}">
+                        <div class="card-header border border-dark bg-success p-2 text-dark bg-opacity-50">
+                            <h3 th:text="#{account.history.title}">Account History</h3>
+                        </div>
+
+                        <table class="table table-success table-striped table-hover">
+                            <thead>
+                            <th scope="col" th:text="#{account.history.accountID}">Account ID</th>
+                            <th scope="col" th:text="#{account.history.processType}">Process Type</th>
+                            <th scope="col" th:text="#{account.history.date}">Process Date</th>
+                            <th scope="col" th:text="#{account.history.amount}">Amount</th>
+                            <th scope="col" th:text="#{account.history.currency}">Currency</th>
+                            </thead>
+                            <tbody>
+                            <tr th:each="history_ : ${history.getContent()}" style="cursor: pointer;">
+                                <td th:text="${history_.accountID()}" style="padding-left: 4%;"></td>
+                                <td class="processType" th:text="${history_.processType()}"></td>
+                                <td th:text="${history_.processDate()}"></td>
+                                <td class="processAmount" th:text="${history_.amount()}"></td>
+                                <td th:text="${history_.currency()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="card-footer d-flex justify-content-center">
+                        <div th:if="${history.getTotalPages() > 1}">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <div th:if="${history.hasPrevious()}">
+                                            <a class="page-link" th:href="@{/account-options/info/{id}( id = ${account.ID()}, page=${history.getNumber() - 1} , size=3)}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </div>
+                                        <div th:unless="${history.hasPrevious()}"></div>
+                                    </li>
+                                    <th:block th:each="i: ${#numbers.sequence(0, history.getTotalPages() - 1)}">
+                                        <li class="page-item"> <a class="page-link" th:href="@{/account-options/info/{id}( id = ${account.ID()}, page=${i} , size=3)}" th:text="${i + 1}"></a></li>
+                                    </th:block>
+                                    <li class="page-item">
+                                        <div th:if="${history.hasNext()}">
+                                            <a class="page-link" th:href="@{/account-options/info/{id}( id = ${account.ID()} ,page=${history.getNumber() + 1} , size=3)}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </div>
+                                        <div th:unless="${history.hasNext()}">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+
+                        <div th:unless="${history.getNumberOfElements() > 0}">
+                            <p>Not found any account</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 </body>
+<script th:src="@{/js/accountHistory.js}"></script>
 <footer th:replace="fragments/common_fragments::common-footer">Footer</footer>
 </html>

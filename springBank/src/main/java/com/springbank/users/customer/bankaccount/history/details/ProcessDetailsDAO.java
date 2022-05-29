@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface ProcessDetailsDAO extends MongoRepository<ProcessDetails, Long> {
 
     Optional<ProcessDetails> findByProcessId(Long processId);
+
+
 }

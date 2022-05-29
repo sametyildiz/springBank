@@ -4,6 +4,7 @@ import com.springbank.security.CredentialsService;
 import com.springbank.users.customer.Customer;
 import com.springbank.users.customer.CustomerService;
 import com.springbank.users.customer.bankaccount.history.AccountHistory;
+import com.springbank.users.customer.bankaccount.history.AccountHistoryPageableRequest;
 import com.springbank.users.customer.bankaccount.history.AccountHistoryService;
 import com.springbank.users.customer.bankaccount.history.details.ProcessDetails;
 import com.springbank.utils.InvalidAuthentication;
@@ -88,10 +89,13 @@ public class AccountService {
     public ProcessDetails getProcessDetails(Long id) {
         return accountHistoryService.getProcessDetailsProcessId(id);
     }
-    public List<AccountHistory> getAllAccountHistory(Long id){
-        return accountHistoryService.getAllHistoryByAccountId(id);
+    @Transactional(timeout = 100, readOnly = true)
+    public Page<AccountHistoryPageableRequest> getAccountHistoryByAccountId(Long id, int page, int size){
+        return accountHistoryService.getHistoryByAccountId(id, PageRequest.of(page,size));
     }
-
+    public List<AccountHistory> getAccountHistoryByAccountId(Long id){
+        return accountHistoryService.getHistoryByAccountId(id);
+    }
     public AccountHistory saveProcess(AccountHistory accountHistory) {
         return accountHistoryService.saveAndGetProccess(accountHistory);
     }
