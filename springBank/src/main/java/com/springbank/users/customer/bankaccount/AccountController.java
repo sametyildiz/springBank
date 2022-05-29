@@ -1,5 +1,7 @@
 package com.springbank.users.customer.bankaccount;
 
+import com.springbank.users.customer.bankaccount.history.AccountHistory;
+import com.springbank.users.customer.bankaccount.history.AccountHistoryPageableRequest;
 import com.springbank.utils.InvalidAuthentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,12 @@ public class AccountController {
 
 
     @GetMapping(value = "/info/{id}")
-    public String getAccount(Model model, @PathVariable("id") Long id) throws InvalidAuthentication {
+    public String getAccount(Model model,
+                             @PathVariable("id") Long id,
+                             @RequestParam(defaultValue = "0") Integer page,
+                             @RequestParam(defaultValue = "3") Integer size) throws InvalidAuthentication {
         Optional<Account> account = accountService.getAccountWithAuth(id);
+
         if (account.isEmpty())
             log.error("Account with id {} not found", id);
 
@@ -33,8 +39,10 @@ public class AccountController {
                                 m.getCustomer().getID(),
                                 m.getCustomer().getName(),
                                 m.getCustomer().getSurname())).get();
+        Page<AccountHistoryPageableRequest> history = accountService.getAccountHistoryByAccountId(id,page,size);
 
         model.addAttribute("account", response);
+        model.addAttribute("history", history);
         return "customers/customer-account";
     }
 

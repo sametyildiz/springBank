@@ -9,7 +9,6 @@ import com.springbank.users.customer.bankaccount.history.AccountHistory;
 import com.springbank.users.customer.bankaccount.history.AccountHistoryService;
 import com.springbank.users.customer.bankaccount.history.ProcessType;
 import com.springbank.users.customer.bankaccount.history.details.ProcessDetails;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,7 +101,7 @@ class RemittanceServiceTest {
     @Test
     void transferWithProcessHistoryCheckHistory(){
         remittanceService.remittance(request);
-        List<AccountHistory> history = accountService.getAllAccountHistory(a1.getID());
+        List<AccountHistory> history = accountService.getAccountHistoryByAccountId(a1.getID());
         assertTrue(history.size() > 0);
         assertEquals(history.get(0).getAccount().getID(), a1.getID());
         assertEquals(history.get(0).getProcessType(), ProcessType.Outflow);
@@ -112,13 +111,11 @@ class RemittanceServiceTest {
     @Test
     void transferWithProcessHistoryCheckProcessDetails(){
         remittanceService.remittance(request);
-        AccountHistory history = accountService.getAllAccountHistory(a1.getID()).get(0);
+        AccountHistory history = accountService.getAccountHistoryByAccountId(a1.getID()).get(0);
         ProcessDetails details = accountService.getProcessDetails(history.getProcessId());
         assertNotNull(details);
         assertEquals(details.getProcessType(), ProcessType.Transfer);
         assertEquals(details.getReciverId(), request.getReceiverID());
-        assertEquals(details.getCurrency(), request.getCurrency());
-        assertEquals(details.getAmount(), request.getAmount());
         assertEquals(details.getReciverName(), request.getReceiverName() + " " + request.getReceiverSurname());
 
 

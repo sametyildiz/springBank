@@ -16,6 +16,8 @@ public class ProcessDetails {
     @Id
     private Long processId;
 
+    private Long senderId;
+
     private Long reciverId;
 
     private String reciverName;
@@ -24,11 +26,12 @@ public class ProcessDetails {
 
     private String CreditCardNumber;
 
-    private Double amount;
+    //TODO: remove to history
 
-    private Currency currency;
 
-    public ProcessDetails(Long processId, Long reciverId,
+    private String description;
+
+/*    public ProcessDetails(Long processId, Long reciverId,
                           String reciverName, ProcessType processType, Double amount, Currency currency) {
         this.processId = processId;
         this.reciverId = reciverId;
@@ -36,5 +39,5 @@ public class ProcessDetails {
         this.processType = processType;
         this.amount = amount;
         this.currency = currency;
-    }
+    }*/
 }

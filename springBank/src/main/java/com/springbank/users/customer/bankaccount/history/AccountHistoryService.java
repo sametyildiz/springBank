@@ -2,8 +2,11 @@ package com.springbank.users.customer.bankaccount.history;
 
 import com.springbank.users.customer.bankaccount.history.details.ProcessDetails;
 import com.springbank.users.customer.bankaccount.history.details.ProcessDetailsService;
+import com.springbank.utils.LocalDateFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,10 +44,16 @@ public class AccountHistoryService {
         return false;
     }
     @Transactional(timeout = 100)
-    public List<AccountHistory> getAllHistoryByAccountId(Long accountId) {
+    public Page<AccountHistoryPageableRequest> getHistoryByAccountId(Long accountId, PageRequest pageRequest) {
+        return accountHistoryDAO.findHistoriesByAccount_ID_OrderByProcessDateTimeDesc(accountId, pageRequest).map(
+                h -> new AccountHistoryPageableRequest(
+                        accountId, h.getProcessId(), h.getProcessType(), LocalDateFormat.localDate(h.getProcessDateTime()), h.getAmount(), h.getCurrency())
+        );
+    }
+    @Transactional(timeout = 100)
+    public List<AccountHistory> getHistoryByAccountId(Long accountId) {
         return accountHistoryDAO.findAllByAccount_ID(accountId);
     }
-
     @Transactional(timeout = 100)
     public ProcessDetails getProcessDetailsProcessId(Long processId) {
         return processDetailsService.getProcessDetails(processId);

@@ -1,6 +1,7 @@
 package com.springbank.users.customer.bankaccount.history;
 
 import com.springbank.users.customer.bankaccount.Account;
+import com.springbank.users.customer.bankaccount.Currency;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,5 +30,11 @@ public class AccountHistory {
     @ManyToOne
     @JoinColumn(name = "account_id" , referencedColumnName = "ID")
     private Account account;
+
+    @Column
+    private Double amount;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
 }

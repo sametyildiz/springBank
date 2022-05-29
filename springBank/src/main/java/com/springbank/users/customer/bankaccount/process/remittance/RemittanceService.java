@@ -34,7 +34,6 @@ public class RemittanceService {
     }
     @Transactional(timeout = 100)
     public boolean remittance(RemittanceRequest remittanceRequest){
-        /*TODO : currency from posting*/
         if(!checkRemittanceRequest(remittanceRequest)){
             return false;
         }
@@ -109,29 +108,35 @@ public class RemittanceService {
     }
     private Map.Entry<AccountHistory,AccountHistory> createProcessHistory(RemittanceRequest remittanceRequest){
         Calendar calendar = Calendar.getInstance();
-        AccountHistory senderHistory = new AccountHistory();
-        AccountHistory receiverHistory = new AccountHistory();
-
-        senderHistory.setAccount(accountService.getAccount(remittanceRequest.getSenderID()).get());
-        senderHistory.setProcessType(ProcessType.Outflow);
-        senderHistory.setProcessDateTime(calendar);
-
-        receiverHistory.setAccount(accountService.getAccount(remittanceRequest.getReceiverID()).get());
-        receiverHistory.setProcessType(ProcessType.Inflow);
-        receiverHistory.setProcessDateTime(calendar);
-
-
+        AccountHistory senderHistory = generateHistory(
+                accountService.getAccount(remittanceRequest.getSenderID()).get(),
+                ProcessType.Outflow,
+                remittanceRequest,
+                calendar);
+        AccountHistory receiverHistory = generateHistory(
+                accountService.getAccount(remittanceRequest.getReceiverID()).get(),
+                ProcessType.Inflow,
+                remittanceRequest,
+                calendar);
         return new AbstractMap.SimpleEntry<>(senderHistory,receiverHistory);
     }
 
+    private AccountHistory generateHistory(Account account, ProcessType processType, RemittanceRequest remittanceRequest, Calendar calendar){
+        AccountHistory history = new AccountHistory();
+        history.setAccount(account);
+        history.setProcessType(processType);
+        history.setProcessDateTime(calendar);
+        history.setAmount(remittanceRequest.getAmount());
+        history.setCurrency(remittanceRequest.getCurrency());
+        return history;
+    }
     private ProcessDetails createProcessDetails(RemittanceRequest remittanceRequest){
         ProcessDetails processDetails = new ProcessDetails();
         processDetails.setProcessType(ProcessType.Transfer);
-        processDetails.setAmount(remittanceRequest.getAmount());
-        processDetails.setCurrency(remittanceRequest.getCurrency());
         processDetails.setReciverId(remittanceRequest.getReceiverID());
         processDetails.setReciverName(String.format("%s %s",
                 remittanceRequest.getReceiverName(),remittanceRequest.getReceiverSurname()));
+        processDetails.setDescription(remittanceRequest.getDescription());
 
         return processDetails;
     }
